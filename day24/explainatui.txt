@@ -1,0 +1,26 @@
+The application builds a Profile Dashboard where typing into a form instantly updates a preview card on the same screen, along with a toggle button to switch between Dark and Light themes.
+
+Key Concepts Applied
+Forms & Controlled Inputs
+
+React holds the state (formData) for every input field.
+
+As you type or click a checkbox, an onChange handler updates formData, keeping the form inputs and state completely synced.
+
+Live Preview
+
+The preview card reads directly from formData.
+
+When formData updates, React automatically re-renders the preview card in real time without refreshing the page.
+
+Conditional Rendering
+
+Text Fallbacks Shows default text like Your Name Here if the name field is empty.
+
+Optional Blocks Shows sections like the Bio or Newsletter Badge only if the corresponding field is filled or checked.
+
+Theme Toggle (State)
+
+A single state variable (theme) switches between 'light' and 'dark'.
+
+Changing this state re-calculates the UI color palette and updates the background, cards, text, and inputs across the layout.
