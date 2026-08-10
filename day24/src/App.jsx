@@ -1,32 +1,33 @@
 import React, { useState } from 'react';
 
-export default function ProfileDashboard() {
-  // Theme state: 'light' or 'dark'
+export default function NaqibPortfolioDashboard() {
   const [theme, setTheme] = useState('dark');
 
+  // Naqib's Portfolio State
   const [formData, setFormData] = useState({
-    name: '',
-    role: 'Frontend Developer',
-    status: 'Active',
-    bio: '',
-    email: '',
-    subscribeToNewsletter: true,
+    name: 'Naqib',
+    title: 'Computer Science Student',
+    university: 'Air University, Islamabad',
+    semester: '7th Semester',
+    company: 'Hindukushsoft Technology',
+    role: 'Software Engineer Intern',
+    bio: 'CS student passionate about full-stack web development and software engineering. Currently building real-world solutions as an intern.',
+    skills: 'React.js, JavaScript, Python, Node.js',
+    status: 'Open to Work',
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
   };
 
-  // Toggle theme handler
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  // Dynamic Theme Palette
   const isDark = theme === 'dark';
   const colors = {
     bg: isDark ? '#0f172a' : '#f8fafc',
@@ -43,9 +44,8 @@ export default function ProfileDashboard() {
     <div style={{ ...styles.appContainer, backgroundColor: colors.bg, color: colors.textPrimary }}>
       {/* 1. TOP NAVBAR */}
       <nav style={{ ...styles.navbar, backgroundColor: colors.cardBg, borderColor: colors.border }}>
-        <div style={{ ...styles.logo, color: colors.accent }}>⚡ DevDashboard</div>
+        <div style={{ ...styles.logo, color: colors.accent }}>👨‍💻 Naqib.dev</div>
         
-        {/* THEME TOGGLE BUTTON */}
         <button 
           onClick={toggleTheme} 
           style={{ ...styles.themeBtn, backgroundColor: isDark ? '#334155' : '#e2e8f0', color: colors.textPrimary }}
@@ -54,29 +54,29 @@ export default function ProfileDashboard() {
         </button>
       </nav>
 
-      {/* MAIN BODY (SIDEBAR + CONTENT) */}
+      {/* MAIN BODY */}
       <div style={styles.mainContent}>
         {/* 2. SIDEBAR */}
         <aside style={{ ...styles.sidebar, backgroundColor: colors.cardBg, borderColor: colors.border }}>
-          <div style={styles.sidebarItemActive}>👤 User Profile</div>
-          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>📊 Analytics</div>
-          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>⚙️ Preferences</div>
-          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>🔒 Security</div>
+          <div style={styles.sidebarItemActive}>👤 Profile Card</div>
+          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>🎓 Academic Info</div>
+          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>💼 Internship</div>
+          <div style={{ ...styles.sidebarItem, color: colors.textSecondary }}>🚀 Projects</div>
         </aside>
 
         {/* 3. DASHBOARD WORKSPACE */}
         <main style={styles.workspace}>
           <header style={styles.pageHeader}>
-            <h2 style={{ margin: 0, color: colors.textPrimary }}>Manage Profile</h2>
+            <h2 style={{ margin: 0, color: colors.textPrimary }}>Portfolio Editor & Live Preview</h2>
             <p style={{ color: colors.textSecondary, marginTop: '0.25rem' }}>
-              Update your personal information and toggle light/dark modes.
+              Air University Islamabad • 7th Semester • Intern @ Hindukushsoft Technology
             </p>
           </header>
 
           <div style={styles.gridContainer}>
             {/* INPUT FORM PANEL */}
             <div style={{ ...styles.card, backgroundColor: colors.cardBg, borderColor: colors.border }}>
-              <h3 style={{ ...styles.cardTitle, color: colors.textPrimary }}>Edit Information</h3>
+              <h3 style={{ ...styles.cardTitle, color: colors.textPrimary }}>Edit Portfolio Details</h3>
               
               <div style={styles.formGroup}>
                 <label style={{ ...styles.label, color: colors.textSecondary }}>Full Name</label>
@@ -85,110 +85,123 @@ export default function ProfileDashboard() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="e.g. Ali Khan"
-                  style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={{ ...styles.label, color: colors.textSecondary }}>Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="ali@example.com"
                   style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
                 />
               </div>
 
               <div style={styles.formRow}>
                 <div style={{ flex: 1, marginRight: '10px' }}>
-                  <label style={{ ...styles.label, color: colors.textSecondary }}>Role</label>
-                  <select 
-                    name="role" 
-                    value={formData.role} 
-                    onChange={handleChange} 
+                  <label style={{ ...styles.label, color: colors.textSecondary }}>University</label>
+                  <input
+                    type="text"
+                    name="university"
+                    value={formData.university}
+                    onChange={handleChange}
                     style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
-                  >
-                    <option value="Frontend Developer">Frontend Developer</option>
-                    <option value="UI/UX Designer">UI/UX Designer</option>
-                    <option value="Fullstack Engineer">Fullstack Engineer</option>
-                    <option value="Product Manager">Product Manager</option>
-                  </select>
+                  />
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  <label style={{ ...styles.label, color: colors.textSecondary }}>Availability</label>
-                  <select 
-                    name="status" 
-                    value={formData.status} 
-                    onChange={handleChange} 
+                  <label style={{ ...styles.label, color: colors.textSecondary }}>Semester</label>
+                  <input
+                    type="text"
+                    name="semester"
+                    value={formData.semester}
+                    onChange={handleChange}
                     style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
-                  >
-                    <option value="Active">Available</option>
-                    <option value="Busy">Busy</option>
-                    <option value="Offline">Offline</option>
-                  </select>
+                  />
+                </div>
+              </div>
+
+              <div style={styles.formRow}>
+                <div style={{ flex: 1, marginRight: '10px' }}>
+                  <label style={{ ...styles.label, color: colors.textSecondary }}>Internship Company</label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleChange}
+                    style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
+                  />
+                </div>
+
+                <div style={{ flex: 1 }}>
+                  <label style={{ ...styles.label, color: colors.textSecondary }}>Intern Role</label>
+                  <input
+                    type="text"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
+                  />
                 </div>
               </div>
 
               <div style={styles.formGroup}>
-                <label style={{ ...styles.label, color: colors.textSecondary }}>Bio</label>
+                <label style={{ ...styles.label, color: colors.textSecondary }}>Technical Skills (Comma Separated)</label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                  style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border }}
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={{ ...styles.label, color: colors.textSecondary }}>Short Bio</label>
                 <textarea
                   name="bio"
                   value={formData.bio}
                   onChange={handleChange}
                   rows="3"
-                  placeholder="Write a short summary..."
                   style={{ ...styles.input, backgroundColor: colors.inputBg, color: colors.textPrimary, borderColor: colors.border, resize: 'vertical' }}
                 />
               </div>
-
-              <div style={styles.checkboxGroup}>
-                <input
-                  type="checkbox"
-                  id="newsletter"
-                  name="subscribeToNewsletter"
-                  checked={formData.subscribeToNewsletter}
-                  onChange={handleChange}
-                />
-                <label htmlFor="newsletter" style={{ ...styles.checkboxLabel, color: colors.textSecondary }}>
-                  Subscribe to email notifications
-                </label>
-              </div>
             </div>
 
-            {/* LIVE PREVIEW CARD */}
+            {/* LIVE PORTFOLIO PREVIEW CARD */}
             <div style={{ ...styles.card, backgroundColor: colors.previewBg, borderColor: colors.border }}>
               <div style={styles.previewHeader}>
-                <h3 style={{ ...styles.cardTitle, color: colors.textPrimary }}>Live Card Preview</h3>
-                <span style={styles.liveBadge}>● LIVE</span>
+                <h3 style={{ ...styles.cardTitle, color: colors.textPrimary }}>Live Portfolio Preview</h3>
+                <span style={styles.liveBadge}>● LIVE CARD</span>
               </div>
 
               <div style={styles.previewCardBody}>
+                {/* Avatar */}
                 <div style={styles.avatar}>
-                  {formData.name ? formData.name.charAt(0).toUpperCase() : '?'}
+                  {formData.name ? formData.name.charAt(0).toUpperCase() : 'N'}
                 </div>
                 
-                <h3 style={{ ...styles.profileName, color: colors.textPrimary }}>{formData.name || 'Your Name Here'}</h3>
-                <p style={{ ...styles.profileRole, color: colors.textSecondary }}>{formData.role}</p>
-                <p style={{ ...styles.profileEmail, color: colors.textSecondary }}>{formData.email || 'email@domain.com'}</p>
+                <h3 style={{ ...styles.profileName, color: colors.textPrimary }}>{formData.name || 'Naqib'}</h3>
+                <p style={{ ...styles.profileRole, color: colors.accent }}>{formData.title}</p>
 
-                <span style={formData.status === 'Active' ? styles.statusActive : styles.statusOffline}>
-                  {formData.status}
-                </span>
+                {/* Academic Tag */}
+                <div style={{ ...styles.tagBox, backgroundColor: colors.cardBg, borderColor: colors.border }}>
+                  🎓 <strong>{formData.university}</strong> ({formData.semester})
+                </div>
 
-                {formData.bio && (
-                  <div style={{ ...styles.bioContainer, backgroundColor: colors.cardBg, borderColor: colors.border }}>
-                    <small style={{ color: colors.textSecondary, fontWeight: 'bold' }}>ABOUT</small>
-                    <p style={{ ...styles.bioText, color: colors.textPrimary }}>{formData.bio}</p>
+                {/* Internship Tag */}
+                <div style={{ ...styles.tagBox, backgroundColor: colors.cardBg, borderColor: colors.border, marginTop: '0.5rem' }}>
+                  💼 <strong>{formData.role}</strong> at <span style={{ color: '#10b981', fontWeight: 'bold' }}>{formData.company}</span>
+                </div>
+
+                {/* Skills */}
+                {formData.skills && (
+                  <div style={{ marginTop: '1rem', display: 'flex', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    {formData.skills.split(',').map((skill, index) => (
+                      <span key={index} style={styles.skillBadge}>
+                        {skill.trim()}
+                      </span>
+                    ))}
                   </div>
                 )}
 
-                {formData.subscribeToNewsletter && (
-                  <div style={styles.newsletterBadge}>
-                    🔔 Subscribed to updates
+                {/* Bio Display */}
+                {formData.bio && (
+                  <div style={{ ...styles.bioContainer, backgroundColor: colors.cardBg, borderColor: colors.border }}>
+                    <small style={{ color: colors.textSecondary, fontWeight: 'bold' }}>ABOUT NAQIB</small>
+                    <p style={{ ...styles.bioText, color: colors.textPrimary }}>{formData.bio}</p>
                   </div>
                 )}
               </div>
@@ -199,7 +212,7 @@ export default function ProfileDashboard() {
 
       {/* 4. FOOTER */}
       <footer style={{ ...styles.footer, backgroundColor: colors.cardBg, borderColor: colors.border, color: colors.textSecondary }}>
-        <p>© 2026 DevDashboard App. Theme Mode: <strong>{theme.toUpperCase()}</strong></p>
+        <p>© 2026 Naqib | Air University Islamabad | Intern @ Hindukushsoft Technology</p>
       </footer>
     </div>
   );
@@ -224,19 +237,15 @@ const styles = {
   formRow: { display: 'flex', marginBottom: '1rem' },
   label: { display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' },
   input: { width: '100%', padding: '0.6rem 0.8rem', borderRadius: '6px', border: '1px solid', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' },
-  checkboxGroup: { display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' },
-  checkboxLabel: { fontSize: '0.85rem', cursor: 'pointer' },
   previewHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   liveBadge: { backgroundColor: '#dcfce7', color: '#15803d', fontSize: '0.75rem', fontWeight: 'bold', padding: '0.2rem 0.5rem', borderRadius: '12px' },
   previewCardBody: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '1rem' },
-  avatar: { width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#6366f1', color: '#fff', fontSize: '1.5rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' },
-  profileName: { margin: 0, fontSize: '1.2rem' },
-  profileRole: { margin: '0.2rem 0', fontSize: '0.9rem' },
-  profileEmail: { margin: '0 0 0.75rem 0', fontSize: '0.8rem' },
-  statusActive: { padding: '0.2rem 0.6rem', backgroundColor: '#dcfce7', color: '#166534', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold' },
-  statusOffline: { padding: '0.2rem 0.6rem', backgroundColor: '#f3f4f6', color: '#374151', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold' },
-  bioContainer: { marginTop: '1rem', width: '100%', textAlign: 'left', padding: '0.75rem', borderRadius: '6px', border: '1px solid' },
+  avatar: { width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#6366f1', color: '#fff', fontSize: '1.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' },
+  profileName: { margin: 0, fontSize: '1.3rem' },
+  profileRole: { margin: '0.2rem 0 0.75rem 0', fontSize: '0.95rem', fontWeight: 'bold' },
+  tagBox: { fontSize: '0.82rem', padding: '0.5rem 0.8rem', borderRadius: '8px', border: '1px solid', width: '90%' },
+  skillBadge: { backgroundColor: '#eeeffe', color: '#4f46e5', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' },
+  bioContainer: { marginTop: '1rem', width: '90%', textAlign: 'left', padding: '0.75rem', borderRadius: '6px', border: '1px solid' },
   bioText: { margin: '0.3rem 0 0 0', fontSize: '0.85rem' },
-  newsletterBadge: { marginTop: '1rem', fontSize: '0.8rem', color: '#818cf8', backgroundColor: '#312e81', padding: '0.4rem 0.8rem', borderRadius: '6px' },
   footer: { textAlign: 'center', padding: '1rem', borderTop: '1px solid', fontSize: '0.85rem' }
 };
