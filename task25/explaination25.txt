@@ -1,0 +1,32 @@
+Day 25 Task: Hindukush Task Manager (React Frontend)
+
+Objective: Build a frontend-only task management app demonstrating core React fundamentals — state, props, component composition, and controlled forms.
+
+Tech Stack: React (Vite), Tailwind CSS v4
+
+How it works:
+
+Welcome Screen — user enters their name (controlled input + form state)
+Dashboard — displays a personalized greeting, an "Add Task" form (title + priority), and two dynamically generated sections:
+Pending Tasks — sorted automatically by priority (High → Medium → Low)
+Completed Tasks — shown with strikethrough task names once marked done
+Navbar & Footer — persistent layout shell showing the app name and logged-in user
+
+React concepts demonstrated:
+
+useState for managing tasks, user name, and form inputs
+Props — parent (App.jsx) passes data down to child components (Navbar, TaskManager, TaskCard)
+Component composition — UI broken into small, reusable pieces instead of one large file
+Controlled inputs — form fields bound directly to state
+Derived data — pending/completed lists are computed (filtered + sorted) from a single tasks array rather than stored separately, keeping one source of truth
+Lifted state — userName lives in the top-level App.jsx so multiple children can access it
+
+Files:
+
+App.jsx              → top-level state + layout
+components/
+  Navbar.jsx          → header with app name + user
+  Footer.jsx
+  WelcomeScreen.jsx    → name-entry form
+  TaskManager.jsx       → dashboard logic (add/complete/delete tasks)
+  TaskCard.jsx           → reusable task row
