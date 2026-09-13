@@ -24,9 +24,11 @@ class TourPackageController extends Controller
             $query->where('price', '<=', $request->input('max_price'));
         }
 
-        $query->where('availability', true);
+        if (!$request->boolean('all') && !$request->user()?->isAdmin()) {
+            $query->where('availability', true);
+        }
 
-        return response()->json($query->paginate(12));
+        return response()->json($query->paginate(100));
     }
 
     public function show(TourPackage $package)

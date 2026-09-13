@@ -10,9 +10,13 @@ class GuideController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Guide::with('user')->where('availability', true);
+        $query = Guide::with('user');
 
-        return response()->json($query->paginate(12));
+        if (!$request->boolean('all') && !$request->user()?->isAdmin()) {
+            $query->where('availability', true);
+        }
+
+        return response()->json($query->paginate(100));
     }
 
     public function store(Request $request)

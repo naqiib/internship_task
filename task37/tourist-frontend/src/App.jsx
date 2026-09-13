@@ -11,6 +11,7 @@ import DestinationDetail from './pages/DestinationDetail';
 import Packages from './pages/Packages';
 import BookingForm from './pages/BookingForm';
 import MyBookings from './pages/MyBookings';
+import Favourites from './pages/Favourites';
 import AdminDashboard from './pages/AdminDashboard';
 
 import './App.css';
@@ -41,6 +42,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MyBookings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favourites"
+              element={
+                <ProtectedRoute>
+                  <Favourites />
                 </ProtectedRoute>
               }
             />

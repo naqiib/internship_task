@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ItineraryController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\TourPackageController;
+use App\Http\Controllers\Api\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Public auth routes
@@ -17,6 +18,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Public browse routes
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{category}', [CategoryController::class, 'show']);
 Route::get('/destinations', [DestinationController::class, 'index']);
 Route::get('/destinations/{destination}', [DestinationController::class, 'show']);
 Route::get('/destinations/{destination}/reviews', [ReviewController::class, 'index']);
@@ -33,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/destinations', [DestinationController::class, 'store']);
     Route::put('/destinations/{destination}', [DestinationController::class, 'update']);
     Route::delete('/destinations/{destination}', [DestinationController::class, 'destroy']);
+
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
     Route::post('/packages', [TourPackageController::class, 'store']);
     Route::put('/packages/{package}', [TourPackageController::class, 'update']);

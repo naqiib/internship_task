@@ -4,15 +4,26 @@ import client from '../api/client';
 
 export default function Destinations() {
   const [destinations, setDestinations] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCat, setSelectedCat] = useState('');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchDestinations = async (query = '') => {
+  useEffect(() => {
+    client.get('/categories')
+      .then(({ data }) => setCategories(data))
+      .catch(() => {});
+  }, []);
+
+  const fetchDestinations = async (query = search, catId = selectedCat) => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await client.get('/destinations', { params: { search: query } });
+      const params = {};
+      if (query) params.search = query;
+      if (catId) params.category_id = catId;
+      const { data } = await client.get('/destinations', { params });
       setDestinations(data.data || data);
     } catch {
       setError('Could not load destinations. Is the backend running?');
@@ -22,34 +33,20 @@ export default function Destinations() {
   };
 
   useEffect(() => {
-    let active = true;
-
-    const loadDestinations = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const { data } = await client.get('/destinations');
-        if (active) setDestinations(data.data || data);
-      } catch {
-        if (active) setError('Could not load destinations. Is the backend running?');
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-
-    loadDestinations();
-    return () => { active = false; };
-  }, []);
+    fetchDestinations(search, selectedCat);
+  }, [selectedCat]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchDestinations(search);
+    fetchDestinations(search, selectedCat);
   };
 
   return (
     <div className="page">
       <h1>Explore Destinations</h1>
+      <p className="muted">Discover incredible mountains, scenic valleys, and historical wonders.</p>
 
+      {/* SEARCH AND CATEGORY FILTERS */}
       <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"
@@ -60,21 +57,45 @@ export default function Destinations() {
         <button type="submit">Search</button>
       </form>
 
+      <div className="category-pills">
+        <button
+          className={`pill ${selectedCat === '' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('')}
+        >
+          All Categories
+        </button>
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            className={`pill ${selectedCat === String(c.id) ? 'active' : ''}`}
+            onClick={() => setSelectedCat(String(c.id))}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+
       {loading && <p className="muted">Loading destinations...</p>}
       {error && <div className="alert-error">{error}</div>}
 
       <div className="card-grid">
         {!loading && destinations.length === 0 && (
-          <p className="muted">No destinations found.</p>
+          <p className="muted">No destinations match your search.</p>
         )}
         {destinations.map((dest) => (
-          <Link to={`/destinations/${dest.id}`} key={dest.id} className="card">
-            <h3>{dest.name}</h3>
-            <p className="muted">{dest.location}</p>
-            {dest.category && <span className="badge">{dest.category.name}</span>}
-            {dest.estimated_cost && (
-              <p className="price">Est. Rs. {Number(dest.estimated_cost).toLocaleString()}</p>
-            )}
+          <Link to={`/destinations/${dest.id}`} key={dest.id} className="card destination-card">
+            <div className="card-top">
+              <h3>{dest.name}</h3>
+              {dest.category && <span className="badge">{dest.category.name}</span>}
+            </div>
+            <p className="muted">📍 {dest.location}</p>
+            <p className="description-preview">{dest.description}</p>
+            <div className="card-footer">
+              {dest.best_season && <span className="season-tag">🗓️ {dest.best_season}</span>}
+              {dest.estimated_cost && (
+                <span className="price">Est. Rs. {Number(dest.estimated_cost).toLocaleString()}</span>
+              )}
+            </div>
           </Link>
         ))}
       </div>
