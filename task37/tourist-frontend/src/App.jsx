@@ -1,0 +1,71 @@
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Destinations from './pages/Destinations';
+import DestinationDetail from './pages/DestinationDetail';
+import Packages from './pages/Packages';
+import BookingForm from './pages/BookingForm';
+import MyBookings from './pages/MyBookings';
+import AdminDashboard from './pages/AdminDashboard';
+
+import './App.css';
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/destinations" element={<Destinations />} />
+            <Route path="/destinations/:id" element={<DestinationDetail />} />
+            <Route path="/packages" element={<Packages />} />
+            <Route
+              path="/book/:packageId"
+              element={
+                <ProtectedRoute>
+                  <BookingForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bookings"
+              element={
+                <ProtectedRoute>
+                  <MyBookings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className="page narrow">
+      <h1>Page not found</h1>
+      <p className="muted">The page you requested does not exist.</p>
+      <Link to="/">Return home</Link>
+    </div>
+  );
+}
