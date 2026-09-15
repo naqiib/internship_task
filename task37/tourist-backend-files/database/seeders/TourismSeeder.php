@@ -16,7 +16,7 @@ class TourismSeeder extends Seeder
     {
         $admin = User::create([
             'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'email' => 'naqib@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
