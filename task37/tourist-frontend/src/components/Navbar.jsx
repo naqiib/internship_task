@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
+import { Bell, Heart, LogOut, Menu, Settings, X } from 'lucide-react';
+import northernPlaceLogo from '../assets/northern-place-logo.jpg';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -30,32 +33,39 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+    setMenuOpen(false);
   };
 
   return (
     <nav className="navbar">
-      <Link to="/" className="brand">🏔️ Tourist Management</Link>
-      <div className="nav-links">
-        <Link to="/destinations">Destinations</Link>
-        <Link to="/packages">Packages</Link>
+      <Link to="/" className="brand" onClick={() => setMenuOpen(false)}><img className="brand-logo" src={northernPlaceLogo} alt="Northern Place mountain logo" /> <span>Northern Place</span></Link>
+      <button className="menu-toggle" aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} onClick={() => setMenuOpen(!menuOpen)}>
+        {menuOpen ? <X size={22} /> : <Menu size={22} />}
+      </button>
+      <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <Link to="/destinations" onClick={() => setMenuOpen(false)}>Destinations</Link>
+        <Link to="/packages" onClick={() => setMenuOpen(false)}>Packages</Link>
+        <a href="/#about" onClick={() => setMenuOpen(false)}>About us</a>
+        <a href="/#services" onClick={() => setMenuOpen(false)}>Services</a>
+        <a href="/#contact" onClick={() => setMenuOpen(false)}>Contact us</a>
         
         {user && (
           <>
-            <Link to="/favourites">❤️ Saved</Link>
-            <Link to="/bookings">My Bookings</Link>
+            <Link to="/favourites" onClick={() => setMenuOpen(false)}><Heart size={16} aria-hidden="true" /> Saved</Link>
+            <Link to="/bookings" onClick={() => setMenuOpen(false)}>My Bookings</Link>
           </>
         )}
 
         {user?.role === 'admin' && (
-          <Link to="/admin" className="admin-nav-link">⚙️ Admin Dashboard</Link>
+          <Link to="/admin" className="admin-nav-link" onClick={() => setMenuOpen(false)}><Settings size={16} aria-hidden="true" /> Admin Dashboard</Link>
         )}
 
         {user ? (
           <div className="user-nav-group">
             {/* NOTIFICATIONS DROPDOWN */}
             <div className="notif-wrapper">
-              <button className="notif-btn" onClick={() => setShowNotifs(!showNotifs)}>
-                🔔
+              <button className="notif-btn" aria-label="Notifications" onClick={() => setShowNotifs(!showNotifs)}>
+                <Bell size={19} aria-hidden="true" />
                 {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
               </button>
               {showNotifs && (
@@ -81,7 +91,7 @@ export default function Navbar() {
               {user.name} <span className="role-tag">{user.role}</span>
             </span>
 
-            <button onClick={handleLogout} className="btn-link">Logout</button>
+            <button onClick={handleLogout} className="btn-link"><LogOut size={16} aria-hidden="true" /> Logout</button>
           </div>
         ) : (
           <>

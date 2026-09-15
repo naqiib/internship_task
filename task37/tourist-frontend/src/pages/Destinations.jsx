@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
+import { CalendarDays, MapPin, Search } from 'lucide-react';
 
 export default function Destinations() {
   const [destinations, setDestinations] = useState([]);
@@ -54,7 +55,7 @@ export default function Destinations() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className="icon-button"><Search size={17} aria-hidden="true" /> Search</button>
       </form>
 
       <div className="category-pills">
@@ -88,10 +89,10 @@ export default function Destinations() {
               <h3>{dest.name}</h3>
               {dest.category && <span className="badge">{dest.category.name}</span>}
             </div>
-            <p className="muted">📍 {dest.location}</p>
+            <p className="muted inline-icon"><MapPin size={15} aria-hidden="true" /> {dest.location}</p>
             <p className="description-preview">{dest.description}</p>
             <div className="card-footer">
-              {dest.best_season && <span className="season-tag">🗓️ {dest.best_season}</span>}
+              {dest.best_season && <span className="season-tag inline-icon"><CalendarDays size={14} aria-hidden="true" /> {dest.best_season}</span>}
               {dest.estimated_cost && (
                 <span className="price">Est. Rs. {Number(dest.estimated_cost).toLocaleString()}</span>
               )}

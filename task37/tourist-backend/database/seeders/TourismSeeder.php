@@ -68,6 +68,17 @@ class TourismSeeder extends Seeder
             'longitude' => 71.7833,
         ]);
 
+        $hunza = Destination::create([
+            'category_id' => $valleys->id,
+            'name' => 'Hunza Valley',
+            'location' => 'Gilgit-Baltistan, Pakistan',
+            'description' => 'A peaceful mountain valley known for Attabad Lake, ancient forts, and Passu Cones.',
+            'estimated_cost' => 35000,
+            'best_season' => 'April - October',
+            'latitude' => 36.3167,
+            'longitude' => 74.6500,
+        ]);
+
         TourPackage::create([
             'destination_id' => $chitral->id,
             'title' => '5-Day Tirich Mir Trek',
@@ -85,6 +96,16 @@ class TourismSeeder extends Seeder
             'duration' => 3,
             'price' => 20000,
             'included_services' => 'Guide, transport, homestay',
+            'availability' => true,
+        ]);
+
+        TourPackage::create([
+            'destination_id' => $hunza->id,
+            'title' => '5-Day Hunza Valley Escape',
+            'description' => 'A scenic journey through Attabad Lake, Altit Fort, Passu Cones, and the villages of Hunza.',
+            'duration' => 5,
+            'price' => 35000,
+            'included_services' => 'Guide, car service, hotel stay, breakfast',
             'availability' => true,
         ]);
 

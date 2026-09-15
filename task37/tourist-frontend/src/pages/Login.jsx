@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Eye, EyeOff, Mountain } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
@@ -8,6 +9,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,33 +27,22 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <form className="auth-card" onSubmit={handleSubmit}>
+      <form className="auth-card auth-login-card" onSubmit={handleSubmit}>
+        <div className="auth-brand"><span><Mountain size={18} /></span> Northern Place</div>
         <h1>Welcome back</h1>
-        <p className="muted">Log in to book your next trip.</p>
+        <p className="auth-intro">Log in to continue your journey with us.</p>
 
         {error && <div className="alert-error">{error}</div>}
 
-        <label>Email</label>
-        <input
-          type="email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
+        <label className="auth-field"><span>Email address</span><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></label>
 
-        <label>Password</label>
-        <input
-          type="password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
+        <label className="auth-field"><span>Password</span><span className="password-input"><input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></span></label>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="auth-submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Log In'}
         </button>
 
-        <p className="muted small">
+        <p className="auth-switch muted small">
           No account? <Link to="/register">Sign up</Link>
         </p>
       </form>

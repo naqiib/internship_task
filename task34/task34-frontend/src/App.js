@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import "./App.css";
+import { useState, useEffect } from "react";
 
 const API_URL = "http://127.0.0.1:8000/api";
 
@@ -8,52 +7,37 @@ function App() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const handleLogout = useCallback(() => {
-    if (token) {
-      fetch(`${API_URL}/logout`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-    }
-    localStorage.removeItem("token");
-    setToken("");
-    setUser(null);
-  }, [token]);
-
-  const fetchUser = useCallback(
-    (authToken) => {
-      fetch(`${API_URL}/user`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          Accept: "application/json",
-        },
+  const fetchUser = (authToken) => {
+    fetch(`${API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        Accept: "application/json",
+      },
+    })
+      .then(async (res) => {
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || "Session expired");
+        return result;
       })
-        .then((res) => {
-          if (!res.ok) throw new Error("Session expired, please login again");
-          return res.json();
-        })
-        .then((result) => setUser(result.user))
-        .catch((err) => {
-          setError(err.message);
-          handleLogout();
-        });
-    },
-    [handleLogout]
-  );
+      .then((result) => setUser(result.user))
+      .catch((err) => {
+        setGeneralError(err.message);
+        handleLogout();
+      });
+  };
 
   useEffect(() => {
     if (token) fetchUser(token);
-  }, [token, fetchUser]);
+  }, [token]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setError("");
+    setGeneralError("");
+    setFieldErrors({});
     setLoading(true);
 
     fetch(`${API_URL}/login`, {
@@ -64,100 +48,99 @@ function App() {
       },
       body: JSON.stringify({ email, password }),
     })
-      .then((res) => res.json())
-      .then((result) => {
+      .then(async (res) => {
+        const result = await res.json();
         setLoading(false);
-        if (!result.success) {
-          setError(result.message || "Login failed");
+
+        if (!res.ok) {
+          if (res.status === 422 && result.errors) {
+            setFieldErrors(result.errors);
+          } else {
+            setGeneralError(result.message || "Login failed");
+          }
           return;
         }
+
         localStorage.setItem("token", result.token);
         setToken(result.token);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
-        setError(err.message);
+        setGeneralError("Network error. Please check your connection.");
       });
+  };
+
+  const handleLogout = () => {
+    if (token) {
+      fetch(`${API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }).catch(() => {});
+    }
+    localStorage.removeItem("token");
+    setToken("");
+    setUser(null);
   };
 
   if (token && user) {
     return (
-      <div className="app-shell authenticated-shell">
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="profile-avatar">{user.name?.charAt(0)?.toUpperCase() || "U"}</div>
-            <div>
-              <p className="eyebrow">Account overview</p>
-              <h1>Welcome back</h1>
-            </div>
-          </div>
-
-          <div className="user-details">
-            <div className="detail-row">
-              <span>Name</span>
-              <strong>{user.name}</strong>
-            </div>
-            <div className="detail-row">
-              <span>Email</span>
-              <strong>{user.email}</strong>
-            </div>
-            <div className="detail-row">
-              <span>User ID</span>
-              <strong>#{user.id}</strong>
-            </div>
-          </div>
-
-          <button type="button" className="primary-button logout-button" onClick={handleLogout}>
-            Logout
-          </button>
+      <div style={{ maxWidth: "500px", margin: "60px auto", fontFamily: "Arial" }}>
+        <h1>Protected User Data</h1>
+        {generalError && <p style={{ color: "red" }}>{generalError}</p>}
+        <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px" }}>
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>User ID:</strong> {user.id}</p>
         </div>
+        <button onClick={handleLogout} style={{ marginTop: "16px", padding: "8px 16px" }}>
+          Logout
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="app-shell">
-      <div className="auth-card">
-        <div className="brand-panel">
-          <div className="brand-mark">A</div>
-          <p className="eyebrow">Secure portal</p>
-          <h1>Access your account</h1>
-          <p className="brand-copy">
-            Manage your profile and stay connected with a streamlined login experience.
+    <div style={{ maxWidth: "400px", margin: "60px auto", fontFamily: "Arial" }}>
+      <h1>Login</h1>
+      {generalError && (
+        <p style={{ color: "red", background: "#fee", padding: "8px", borderRadius: "4px" }}>
+          {generalError}
+        </p>
+      )}
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ width: "100%", padding: "8px", marginBottom: "4px" }}
+        />
+        {fieldErrors.email && (
+          <p style={{ color: "red", fontSize: "13px", margin: "0 0 8px" }}>
+            {fieldErrors.email[0]}
           </p>
-        </div>
+        )}
 
-        <div className="form-panel">
-          <h2>Login</h2>
-          {error && <p className="error-message">{error}</p>}
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ width: "100%", padding: "8px", marginBottom: "4px" }}
+        />
+        {fieldErrors.password && (
+          <p style={{ color: "red", fontSize: "13px", margin: "0 0 8px" }}>
+            {fieldErrors.password[0]}
+          </p>
+        )}
 
-          <form onSubmit={handleLogin} className="auth-form">
-            <label htmlFor="email">Email address</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-
-            <button type="submit" className="primary-button" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-        </div>
-      </div>
+        <button type="submit" disabled={loading} style={{ padding: "8px 16px", marginTop: "8px" }}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
     </div>
   );
 }

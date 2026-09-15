@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../api/client';
+import { CalendarDays, Map, MapPin, Users, Wallet } from 'lucide-react';
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -40,7 +41,7 @@ export default function MyBookings() {
 
   return (
     <div className="page">
-      <h1>📅 My Bookings</h1>
+      <h1 className="title-with-icon"><CalendarDays size={28} aria-hidden="true" /> My Bookings</h1>
       <p className="muted">Track your upcoming tours and travel itineraries</p>
 
       {loading && <p className="muted">Loading your bookings...</p>}
@@ -58,14 +59,14 @@ export default function MyBookings() {
             <div className="booking-main">
               <div>
                 <h3>{b.package?.title || `Booking #${b.id}`}</h3>
-                <p className="muted">📍 {b.package?.destination?.name || 'Destination'}</p>
+                <p className="muted inline-icon"><MapPin size={15} aria-hidden="true" /> {b.package?.destination?.name || 'Destination'}</p>
                 <div className="meta-row">
-                  <span>🗓️ Travel Date: <strong>{b.travel_date}</strong></span>
-                  <span>👥 Persons: <strong>{b.persons}</strong></span>
-                  <span>💰 Total: <strong>Rs. {Number(b.total_cost).toLocaleString()}</strong></span>
+                  <span className="inline-icon"><CalendarDays size={15} aria-hidden="true" /> Travel Date: <strong>{b.travel_date}</strong></span>
+                  <span className="inline-icon"><Users size={15} aria-hidden="true" /> Persons: <strong>{b.persons}</strong></span>
+                  <span className="inline-icon"><Wallet size={15} aria-hidden="true" /> Total: <strong>Rs. {Number(b.total_cost).toLocaleString()}</strong></span>
                 </div>
                 {b.guide?.user && (
-                  <p className="guide-info">👨‍🦯 Assigned Guide: <strong>{b.guide.user.name}</strong></p>
+                  <p className="guide-info inline-icon"><Users size={15} aria-hidden="true" /> Assigned Guide: <strong>{b.guide.user.name}</strong></p>
                 )}
               </div>
 
@@ -76,7 +77,7 @@ export default function MyBookings() {
 
                 <div className="booking-actions">
                   <button className="btn-secondary small" onClick={() => viewItinerary(b.id)}>
-                    🗺️ Itinerary
+                    <Map size={15} aria-hidden="true" /> Itinerary
                   </button>
                   {b.status === 'pending' && (
                     <button className="btn-danger small" onClick={() => handleCancel(b.id)}>
@@ -94,7 +95,7 @@ export default function MyBookings() {
       {activeItinerary && (
         <div className="modal-backdrop" onClick={() => setActiveItinerary(null)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <h3>🗺️ Tour Itinerary (Booking #{activeItinerary.bookingId})</h3>
+            <h3 className="title-with-icon"><Map size={19} aria-hidden="true" /> Tour Itinerary (Booking #{activeItinerary.bookingId})</h3>
             {activeItinerary.items.length === 0 ? (
               <p className="muted">No detailed daily itinerary added yet for this tour.</p>
             ) : (

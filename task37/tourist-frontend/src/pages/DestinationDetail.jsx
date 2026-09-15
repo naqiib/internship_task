@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import { CalendarDays, Clock3, Heart, MapPin, Star, Wallet } from 'lucide-react';
 
 export default function DestinationDetail() {
   const { id } = useParams();
@@ -81,7 +82,7 @@ export default function DestinationDetail() {
       <div className="detail-header">
         <div>
           <h1>{destination.name}</h1>
-          <p className="muted">📍 {destination.location} · <span className="badge">{destination.category?.name}</span></p>
+          <p className="muted inline-icon"><MapPin size={15} aria-hidden="true" /> {destination.location} · <span className="badge">{destination.category?.name}</span></p>
         </div>
 
         {user && (
@@ -89,7 +90,7 @@ export default function DestinationDetail() {
             className={`btn-fav ${isFav ? 'active' : ''}`}
             onClick={toggleFavourite}
           >
-            {isFav ? '❤️ Saved to Favourites' : '🤍 Add to Favourites'}
+            <Heart size={16} fill={isFav ? 'currentColor' : 'none'} aria-hidden="true" /> {isFav ? 'Saved to Favourites' : 'Add to Favourites'}
           </button>
         )}
       </div>
@@ -99,13 +100,13 @@ export default function DestinationDetail() {
         <p>{destination.description}</p>
         <div className="meta-row">
           {destination.estimated_cost && (
-            <span>💰 Estimated Cost: <strong>Rs. {Number(destination.estimated_cost).toLocaleString()}</strong></span>
+            <span className="inline-icon"><Wallet size={15} aria-hidden="true" /> Estimated Cost: <strong>Rs. {Number(destination.estimated_cost).toLocaleString()}</strong></span>
           )}
           {destination.best_season && (
-            <span>🗓️ Best Season: <strong>{destination.best_season}</strong></span>
+            <span className="inline-icon"><CalendarDays size={15} aria-hidden="true" /> Best Season: <strong>{destination.best_season}</strong></span>
           )}
           {destination.reviews_avg_rating && (
-            <span>⭐ Rating: <strong>{Number(destination.reviews_avg_rating).toFixed(1)} / 5</strong></span>
+            <span className="inline-icon"><Star size={15} aria-hidden="true" /> Rating: <strong>{Number(destination.reviews_avg_rating).toFixed(1)} / 5</strong></span>
           )}
         </div>
       </div>
@@ -116,7 +117,7 @@ export default function DestinationDetail() {
         {destination.packages?.length ? destination.packages.map((pkg) => (
           <div key={pkg.id} className="card pkg-card">
             <h3>{pkg.title}</h3>
-            <p className="muted">⏱️ {pkg.duration} days</p>
+            <p className="muted inline-icon"><Clock3 size={15} aria-hidden="true" /> {pkg.duration} days</p>
             {pkg.description && <p className="small">{pkg.description}</p>}
             {pkg.included_services && <p className="badge-light">Includes: {pkg.included_services}</p>}
             <p className="price">Rs. {Number(pkg.price).toLocaleString()}</p>
@@ -137,7 +138,9 @@ export default function DestinationDetail() {
             <li key={r.id} className="review-item">
               <div className="review-header">
                 <strong>{r.user?.name || 'Anonymous Traveler'}</strong>
-                <span className="rating-stars">{'⭐'.repeat(r.rating)}</span>
+                <span className="rating-stars" aria-label={`${r.rating} out of 5 stars`}>
+                  {Array.from({ length: r.rating }, (_, index) => <Star key={index} size={14} fill="currentColor" aria-hidden="true" />)}
+                </span>
               </div>
               <p>{r.comment}</p>
             </li>

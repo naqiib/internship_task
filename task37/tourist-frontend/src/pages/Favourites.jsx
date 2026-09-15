@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
+import { Heart, Trash2 } from 'lucide-react';
 
 export default function Favourites() {
   const [favourites, setFavourites] = useState([]);
@@ -30,7 +31,7 @@ export default function Favourites() {
 
   return (
     <div className="page">
-      <h1>❤️ My Favourite Destinations</h1>
+      <h1 className="title-with-icon"><Heart size={28} aria-hidden="true" /> My Favourite Destinations</h1>
       <p className="muted">Quick access to your saved travel spots</p>
 
       {loading && <p className="muted">Loading favourites...</p>}
@@ -56,7 +57,7 @@ export default function Favourites() {
                   title="Remove from favourites"
                   onClick={() => removeFavourite(dest.id)}
                 >
-                  ❌
+                  <Trash2 size={17} aria-hidden="true" />
                 </button>
               </div>
               <p className="muted">{dest.location}</p>

@@ -58,7 +58,7 @@ class TourismSeeder extends Seeder
         ]);
 
         $kalash = Destination::create([
-            'category_id' => $valleys->id,
+            
             'name' => 'Kalash Valley',
             'location' => 'Chitral, Pakistan',
             'description' => 'Home to the unique Kalash culture and festivals.',

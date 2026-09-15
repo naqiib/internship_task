@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../api/client';
+import { BarChart3, CalendarDays, Compass, Package, RefreshCw, Settings, Users } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -303,10 +304,10 @@ export default function AdminDashboard() {
     <div className="page admin-dashboard">
       <div className="admin-header">
         <div>
-          <h1>⚙️ Admin Control Panel</h1>
+          <h1 className="title-with-icon"><Settings size={28} aria-hidden="true" /> Admin Control Panel</h1>
           <p className="muted">Manage destinations, tour packages, guides, and bookings</p>
         </div>
-        <button onClick={loadAll} className="btn-secondary">🔄 Refresh Data</button>
+        <button onClick={loadAll} className="btn-secondary icon-button"><RefreshCw size={16} aria-hidden="true" /> Refresh Data</button>
       </div>
 
       {toast && <div className="toast-notification">{toast}</div>}
@@ -315,19 +316,19 @@ export default function AdminDashboard() {
       {/* ADMIN TABS NAV */}
       <div className="admin-tabs">
         <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>
-          📊 Overview
+          <BarChart3 size={17} aria-hidden="true" /> Overview
         </button>
         <button className={activeTab === 'destinations' ? 'active' : ''} onClick={() => setActiveTab('destinations')}>
-          🏞️ Destinations ({destinations.length})
+          <Compass size={17} aria-hidden="true" /> Destinations ({destinations.length})
         </button>
         <button className={activeTab === 'packages' ? 'active' : ''} onClick={() => setActiveTab('packages')}>
-          📦 Tour Packages ({packages.length})
+          <Package size={17} aria-hidden="true" /> Tour Packages ({packages.length})
         </button>
         <button className={activeTab === 'guides' ? 'active' : ''} onClick={() => setActiveTab('guides')}>
-          👨‍🦯 Guides ({guides.length})
+          <Users size={17} aria-hidden="true" /> Guides ({guides.length})
         </button>
         <button className={activeTab === 'bookings' ? 'active' : ''} onClick={() => setActiveTab('bookings')}>
-          📅 Bookings ({bookings.length})
+          <CalendarDays size={17} aria-hidden="true" /> Bookings ({bookings.length})
         </button>
       </div>
 
