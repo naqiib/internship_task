@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, Mountain } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import northernPlaceLogo from '../assets/northern-place-logo.jpg';
 
 export default function Register() {
   const { register } = useAuth();
@@ -24,7 +25,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(form);
-      navigate('/destinations');
+      navigate(form.role === 'guide' ? '/guide' : '/destinations');
     } catch (err) {
       setErrors(err.response?.data?.errors || {
         general: [err.response ? 'Registration failed. Please check your details.' : 'Cannot reach the server. Please check the API connection.']
@@ -37,7 +38,10 @@ export default function Register() {
   return (
     <div className="auth-page">
       <form className="auth-card auth-register-card" onSubmit={handleSubmit}>
-        <div className="auth-brand"><span><Mountain size={18} /></span> Northern Place</div>
+        <div className="auth-brand">
+          <img src={northernPlaceLogo} alt="Northern Place" className="auth-logo" />
+          <span>Northern Place</span>
+        </div>
         <h1>Create your account</h1>
         <p className="auth-intro">Start planning your next mountain escape.</p>
 

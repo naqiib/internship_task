@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, Mountain } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import northernPlaceLogo from '../assets/northern-place-logo.jpg';
 
 export default function Login() {
   const { login } = useAuth();
@@ -16,8 +17,9 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(form.email, form.password);
-      navigate('/destinations');
+      const user = await login(form.email, form.password);
+      const destination = user.role === 'admin' ? '/admin' : user.role === 'guide' ? '/guide' : '/destinations';
+      navigate(destination);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Check your credentials.');
     } finally {
@@ -28,7 +30,10 @@ export default function Login() {
   return (
     <div className="auth-page">
       <form className="auth-card auth-login-card" onSubmit={handleSubmit}>
-        <div className="auth-brand"><span><Mountain size={18} /></span> Northern Place</div>
+        <div className="auth-brand">
+          <img src={northernPlaceLogo} alt="Northern Place" className="auth-logo" />
+          <span>Northern Place</span>
+        </div>
         <h1>Welcome back</h1>
         <p className="auth-intro">Log in to continue your journey with us.</p>
 

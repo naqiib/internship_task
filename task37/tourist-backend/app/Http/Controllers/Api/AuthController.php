@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Guide;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,16 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'] ?? 'tourist',
         ]);
+
+        if ($user->isGuide()) {
+            Guide::create([
+                'user_id' => $user->id,
+                'experience' => 'New guide profile',
+                'languages' => 'Urdu, English',
+                'skills' => 'Local guidance',
+                'availability' => true,
+            ]);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

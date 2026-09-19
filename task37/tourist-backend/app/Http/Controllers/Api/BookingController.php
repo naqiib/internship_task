@@ -14,13 +14,19 @@ class BookingController extends Controller
     {
         $user = $request->user();
 
-        $query = Booking::with(['package.destination', 'guide.user']);
+        $query = Booking::with(['package.destination', 'guide.user', 'user']);
 
-        if (!$user->isAdmin()) {
+        if ($user->isGuide()) {
+            $query->whereHas('guide', fn ($guideQuery) => $guideQuery->where('user_id', $user->id));
+        } elseif (!$user->isAdmin()) {
             $query->where('user_id', $user->id);
         }
 
-        return response()->json($query->latest()->paginate(10));
+        if ($request->has('all') || $request->query('all') == '1') {
+            return response()->json($query->latest()->get());
+        }
+
+        return response()->json($query->latest()->paginate(15));
     }
 
     public function store(Request $request)

@@ -16,7 +16,7 @@ class TourismSeeder extends Seeder
     {
         $admin = User::create([
             'name' => 'Admin User',
-            'email' => 'naqib@gmail.com',
+            'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
@@ -58,7 +58,7 @@ class TourismSeeder extends Seeder
         ]);
 
         $kalash = Destination::create([
-            
+            'category_id' => $valleys->id,
             'name' => 'Kalash Valley',
             'location' => 'Chitral, Pakistan',
             'description' => 'Home to the unique Kalash culture and festivals.',

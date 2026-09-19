@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
-import { CalendarDays, MapPin, Search } from 'lucide-react';
+import { CalendarDays, MapPin, Search, ArrowRight } from 'lucide-react';
+import { getDestinationImage } from '../utils/destinationImages';
 
 export default function Destinations() {
   const [destinations, setDestinations] = useState([]);
@@ -13,7 +14,7 @@ export default function Destinations() {
 
   useEffect(() => {
     client.get('/categories')
-      .then(({ data }) => setCategories(data))
+      .then(({ data }) => setCategories(Array.isArray(data) ? data : data.data || []))
       .catch(() => {});
   }, []);
 
@@ -25,9 +26,9 @@ export default function Destinations() {
       if (query) params.search = query;
       if (catId) params.category_id = catId;
       const { data } = await client.get('/destinations', { params });
-      setDestinations(data.data || data);
+      setDestinations(Array.isArray(data) ? data : data.data || []);
     } catch {
-      setError('Could not load destinations. Is the backend running?');
+      setError('Could not load destinations. Please check if the backend is running.');
     } finally {
       setLoading(false);
     }
@@ -43,19 +44,23 @@ export default function Destinations() {
   };
 
   return (
-    <div className="page">
-      <h1>Explore Destinations</h1>
-      <p className="muted">Discover incredible mountains, scenic valleys, and historical wonders.</p>
+    <div className="page destinations-page">
+      <div className="destinations-header">
+        <h1>Explore Destinations</h1>
+        <p className="muted">Discover incredible mountain peaks, peaceful valleys, and rich cultural heritage.</p>
+      </div>
 
       {/* SEARCH AND CATEGORY FILTERS */}
       <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search by name or location..."
+          placeholder="Search by destination name or location (e.g., Kalash, Hunza, Chitral)..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button type="submit" className="icon-button"><Search size={17} aria-hidden="true" /> Search</button>
+        <button type="submit" className="btn-cta">
+          <Search size={17} aria-hidden="true" /> Search
+        </button>
       </form>
 
       <div className="category-pills">
@@ -76,29 +81,53 @@ export default function Destinations() {
         ))}
       </div>
 
-      {loading && <p className="muted">Loading destinations...</p>}
+      {loading && <p className="muted">Loading mountain destinations...</p>}
       {error && <div className="alert-error">{error}</div>}
 
-      <div className="card-grid">
+      <div className="card-grid destinations-grid">
         {!loading && destinations.length === 0 && (
-          <p className="muted">No destinations match your search.</p>
+          <div className="no-results-box">
+            <p className="muted">No destinations match your search criteria.</p>
+          </div>
         )}
-        {destinations.map((dest) => (
-          <Link to={`/destinations/${dest.id}`} key={dest.id} className="card destination-card">
-            <div className="card-top">
-              <h3>{dest.name}</h3>
-              {dest.category && <span className="badge">{dest.category.name}</span>}
-            </div>
-            <p className="muted inline-icon"><MapPin size={15} aria-hidden="true" /> {dest.location}</p>
-            <p className="description-preview">{dest.description}</p>
-            <div className="card-footer">
-              {dest.best_season && <span className="season-tag inline-icon"><CalendarDays size={14} aria-hidden="true" /> {dest.best_season}</span>}
-              {dest.estimated_cost && (
-                <span className="price">Est. Rs. {Number(dest.estimated_cost).toLocaleString()}</span>
-              )}
-            </div>
-          </Link>
-        ))}
+        {destinations.map((dest) => {
+          const image = getDestinationImage(dest.name, dest.location);
+          return (
+            <Link to={`/destinations/${dest.id}`} key={dest.id} className="card destination-card-enhanced">
+              <div className="dest-card-image-wrap">
+                <img src={image} alt={dest.name} loading="lazy" />
+                {dest.category && <span className="dest-badge-top">{dest.category.name}</span>}
+              </div>
+
+              <div className="dest-card-body">
+                <h3>{dest.name}</h3>
+                <p className="muted inline-icon location-tag">
+                  <MapPin size={15} aria-hidden="true" /> {dest.location}
+                </p>
+                {dest.description && (
+                  <p className="description-preview">{dest.description}</p>
+                )}
+
+                <div className="dest-card-footer">
+                  {dest.best_season && (
+                    <span className="season-tag">
+                      <CalendarDays size={14} aria-hidden="true" /> {dest.best_season}
+                    </span>
+                  )}
+                  {dest.estimated_cost && (
+                    <span className="dest-price-tag">
+                      Est. Rs. {Number(dest.estimated_cost).toLocaleString()}
+                    </span>
+                  )}
+                </div>
+
+                <div className="view-details-btn">
+                  View Packages & Details <ArrowRight size={15} />
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
