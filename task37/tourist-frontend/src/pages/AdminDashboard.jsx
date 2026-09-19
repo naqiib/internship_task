@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import {
   Activity,
   BarChart3,
@@ -20,10 +21,24 @@ import {
   TrendingUp,
   UserCheck,
   Users,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
+const formatTravelDate = (value) => {
+  if (!value) return 'Not scheduled';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(date);
+};
+
 export default function AdminDashboard() {
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
   // Core Data Collections
@@ -33,12 +48,18 @@ export default function AdminDashboard() {
   const [packages, setPackages] = useState([]);
   const [guides, setGuides] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [users, setUsers] = useState([]);
 
   // UI States
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleAdminLogout = async () => {
+    await logout();
+    window.location.href = '/login';
+  };
 
   // Modals
   const [modalType, setModalType] = useState(null); // 'destination' | 'package' | 'guide' | 'bookingStatus'
@@ -130,6 +151,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadUsers = async () => {
+    try {
+      const { data } = await client.get('/admin/users');
+      setUsers(Array.isArray(data) ? data : data.data || []);
+    } catch (err) {
+      console.error('Could not load users:', err);
+      setError('Could not load users list.');
+    }
+  };
+
   const loadAll = async () => {
     setLoading(true);
     setError('');
@@ -139,7 +170,8 @@ export default function AdminDashboard() {
       loadDestinations(),
       loadPackages(),
       loadGuides(),
-      loadBookings()
+      loadBookings(),
+      loadUsers()
     ]);
     setLoading(false);
   };
@@ -250,6 +282,20 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteUser = async (userToDelete) => {
+    if (!window.confirm(`Delete ${userToDelete.name} and their account data?`)) return;
+    try {
+      await client.delete(`/admin/users/${userToDelete.id}`);
+      showToast('User deleted successfully.');
+      loadUsers();
+      loadGuides();
+      loadBookings();
+      loadStats();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete user.');
+    }
+  };
+
   const openGuideModal = (guide = null) => {
     setEditingItem(guide);
     if (guide) {
@@ -346,7 +392,52 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="page admin-theme-page">
+    <div className="admin-app-layout">
+      <aside className="admin-sidebar">
+        <div className="sidebar-header">
+          <div className="user-profile-badge">
+            <div className="avatar-icon"><Settings size={19} /><span className="online-dot" /></div>
+            <div className="profile-details">
+              <span className="user-name">{user?.name || 'Administrator'}</span>
+              <span className="user-role-tag">Admin control</span>
+            </div>
+          </div>
+        </div>
+
+        <nav className="sidebar-nav" aria-label="Admin navigation">
+          <div className="nav-section-title">WORKSPACE</div>
+          <div className="nav-group">
+            {[
+              ['overview', 'Overview', BarChart3],
+              ['destinations', 'Destinations', Compass],
+              ['packages', 'Packages', Package],
+              ['guides', 'Tour Guides', UserCheck],
+              ['bookings', 'Bookings', CalendarDays],
+              ['users', 'Users', Users]
+            ].map(([tab, label, Icon]) => (
+              <button
+                key={tab}
+                className={`nav-item ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => { setActiveTab(tab); setSearchQuery(''); }}
+              >
+                <Icon size={17} className="nav-icon" />
+                <span>{label}</span>
+                {tab !== 'overview' && <span className="nav-badge">{tab === 'destinations' ? destinations.length : tab === 'packages' ? packages.length : tab === 'guides' ? guides.length : tab === 'bookings' ? bookings.length : users.length}</span>}
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="admin-logout-btn" onClick={handleAdminLogout}>
+            <LogOut size={17} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <div className="admin-main-content">
+      <div className="page admin-theme-page">
       {/* HEADER BANNER - STYLED IN HINDUKUSH PINE & SAND */}
       <div className="admin-hero-banner">
         <div className="admin-hero-copy">
@@ -424,40 +515,6 @@ export default function AdminDashboard() {
       <div className="admin-main-split">
         {/* LEFT COLUMN: TABS & TABLES */}
         <div className="admin-left-col">
-          {/* TAB BAR NAVIGATION */}
-          <div className="admin-nav-tabs">
-            <button
-              className={`admin-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => setActiveTab('overview')}
-            >
-              <BarChart3 size={17} /> Overview
-            </button>
-            <button
-              className={`admin-tab-btn ${activeTab === 'destinations' ? 'active' : ''}`}
-              onClick={() => setActiveTab('destinations')}
-            >
-              <Compass size={17} /> Destinations ({destinations.length})
-            </button>
-            <button
-              className={`admin-tab-btn ${activeTab === 'packages' ? 'active' : ''}`}
-              onClick={() => setActiveTab('packages')}
-            >
-              <Package size={17} /> Packages ({packages.length})
-            </button>
-            <button
-              className={`admin-tab-btn ${activeTab === 'guides' ? 'active' : ''}`}
-              onClick={() => setActiveTab('guides')}
-            >
-              <UserCheck size={17} /> Tour Guides ({guides.length})
-            </button>
-            <button
-              className={`admin-tab-btn ${activeTab === 'bookings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('bookings')}
-            >
-              <CalendarDays size={17} /> Bookings ({bookings.length})
-            </button>
-          </div>
-
           {/* SEARCH BAR FOR TABLES */}
           {activeTab !== 'overview' && (
             <div className="admin-table-search">
@@ -718,7 +775,7 @@ export default function AdminDashboard() {
                   <p>No bookings match your query.</p>
                 </div>
               ) : (
-                <div className="theme-table-container">
+                <div className="theme-table-container booking-management-table">
                   <table className="theme-admin-table">
                     <thead>
                       <tr>
@@ -736,25 +793,29 @@ export default function AdminDashboard() {
                     <tbody>
                       {filteredBookings.map((b) => (
                         <tr key={b.id}>
-                          <td>#{b.id}</td>
-                          <td>
+                          <td data-label="Booking ID">#{b.id}</td>
+                          <td data-label="Package / Destination">
                             <strong>{b.package?.title || 'Tour Package'}</strong>
                             <div className="small-subtext">{b.package?.destination?.name}</div>
                           </td>
-                          <td>{b.user?.name || `User #${b.user_id}`}</td>
-                          <td>{b.travel_date}</td>
-                          <td>{b.persons}</td>
-                          <td>Rs. {Number(b.total_cost || 0).toLocaleString()}</td>
-                          <td>{b.guide?.user?.name || <em className="unassigned-text">Unassigned</em>}</td>
-                          <td>
-                            <span className={`status-badge status-${b.status}`}>
-                              {b.status}
-                            </span>
+                          <td data-label="Tourist">{b.user?.name || `User #${b.user_id}`}</td>
+                          <td data-label="Travel Date">{formatTravelDate(b.travel_date)}</td>
+                          <td data-label="Persons">{b.persons}</td>
+                          <td data-label="Total Cost">Rs. {Number(b.total_cost || 0).toLocaleString()}</td>
+                          <td data-label="Assigned Guide">{b.guide?.user?.name || <em className="unassigned-text">Unassigned</em>}</td>
+                          <td data-label="Status">
+                            <div className="booking-status-cell">
+                              <span className={`status-badge status-${b.status}`}>
+                                {b.status}
+                              </span>
+                            </div>
                           </td>
-                          <td className="action-btns-cell">
-                            <button className="btn-cta small" onClick={() => openBookingStatusModal(b)}>
-                              Update Status / Guide
-                            </button>
+                          <td data-label="Action" className="action-btns-cell">
+                            <div className="booking-action-cell">
+                              <button className="btn-cta small" onClick={() => openBookingStatusModal(b)}>
+                                Update Status / Guide
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -762,6 +823,56 @@ export default function AdminDashboard() {
                   </table>
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'users' && (
+            <div className="admin-tab-panel">
+              <div className="panel-header-action">
+                <div>
+                  <h2>Users & Trip Details ({users.length})</h2>
+                  <p className="muted">Review tourist bookings and guide assignments from one place.</p>
+                </div>
+              </div>
+
+              <div className="theme-table-container user-management-table">
+                <table className="theme-admin-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Role</th>
+                      <th>Trips / Assignments</th>
+                      <th>Latest Tour Details</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.filter((account) => {
+                      const text = `${account.name} ${account.email} ${account.role}`.toLowerCase();
+                      return text.includes(searchQuery.toLowerCase());
+                    }).map((account) => {
+                      const trips = account.role === 'guide' ? (account.guide_profile?.bookings || account.guideProfile?.bookings || []) : (account.bookings || []);
+                      const latestTrip = trips[0];
+                      return (
+                        <tr key={account.id}>
+                          <td><strong>{account.name}</strong><span className="small-subtext">{account.email}</span></td>
+                          <td><span className={`role-pill role-${account.role}`}>{account.role}</span></td>
+                          <td>{trips.length} trip{trips.length === 1 ? '' : 's'}</td>
+                          <td>
+                            {latestTrip ? (
+                              <span className="trip-detail-cell">
+                                <strong>{latestTrip.package?.title || 'Tour booking'}</strong>
+                                <span>{latestTrip.travel_date} · {latestTrip.status}</span>
+                              </span>
+                            ) : <span className="muted">No trips yet</span>}
+                          </td>
+                          <td><button className="btn-table-action btn-danger-action" onClick={() => handleDeleteUser(account)}><Trash2 size={14} /> Delete</button></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
@@ -1101,6 +1212,8 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 }

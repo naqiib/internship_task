@@ -64,4 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead']);
 
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/admin/users', [AdminController::class, 'users']);
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser']);
 });

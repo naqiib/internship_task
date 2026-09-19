@@ -11,6 +11,30 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    public function users(Request $request)
+    {
+        abort_unless($request->user()->isAdmin(), 403, 'Admin access required.');
+
+        return response()->json(
+            User::with([
+                'bookings.package.destination',
+                'bookings.guide.user',
+                'guideProfile.bookings.package.destination',
+            ])->latest()->get()
+        );
+    }
+
+    public function destroyUser(Request $request, User $user)
+    {
+        abort_unless($request->user()->isAdmin(), 403, 'Admin access required.');
+        abort_if($request->user()->id === $user->id, 422, 'You cannot delete your own admin account.');
+        abort_if($user->isAdmin(), 422, 'Admin accounts cannot be deleted here.');
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully.']);
+    }
+
     public function dashboard(Request $request)
     {
         abort_unless($request->user()->isAdmin(), 403, 'Admin access required.');

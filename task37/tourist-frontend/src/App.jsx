@@ -20,11 +20,11 @@ import './App.css';
 
 function AppLayout() {
   const location = useLocation();
-  const hideFooter = ['/login', '/register'].includes(location.pathname);
+  const hideGlobalChrome = ['/login', '/register', '/admin'].includes(location.pathname);
 
   return (
     <>
-      <Navbar />
+      {!hideGlobalChrome && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -76,7 +76,7 @@ function AppLayout() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      {!hideFooter && <Footer />}
+      {!hideGlobalChrome && <Footer />}
     </>
   );
 }
