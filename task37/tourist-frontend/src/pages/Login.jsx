@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
-import northernPlaceLogo from '../assets/northern-place-logo.jpg';
+import { ArrowLeft, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
@@ -29,28 +28,62 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <form className="auth-card auth-login-card" onSubmit={handleSubmit}>
-        <div className="auth-brand">
-          <img src={northernPlaceLogo} alt="Northern Place" className="auth-logo" />
-          <span>Northern Place</span>
+      <div className="auth-split-card">
+        <form className="auth-form-panel" onSubmit={handleSubmit}>
+          <Link to="/" className="auth-back-home">
+            <ArrowLeft size={15} aria-hidden="true" /> Back to Home
+          </Link>
+          <h1>Login</h1>
+
+          {error && <div className="alert-error">{error}</div>}
+
+          <label className="auth-underline-field">
+            <span className="auth-underline-label">Email address</span>
+            <div className="auth-underline-input">
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
+              <Mail size={18} aria-hidden="true" />
+            </div>
+          </label>
+
+          <label className="auth-underline-field">
+            <span className="auth-underline-label">Password</span>
+            <div className="auth-underline-input">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                required
+              />
+              <button
+                type="button"
+                className="auth-eye-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </label>
+
+          <button type="submit" className="auth-pill-submit" disabled={loading}>
+            {loading ? 'Logging in...' : <><LogIn size={17} aria-hidden="true" /> Log In</>}
+          </button>
+
+          <p className="auth-switch-dark">
+            No account? <Link to="/register">Sign up</Link>
+          </p>
+        </form>
+
+        <div className="auth-welcome-panel">
+          <h2>WELCOME<br />BACK!</h2>
+          <p>Log in to keep planning your next mountain escape with Northern Place.</p>
         </div>
-        <h1>Welcome back</h1>
-        <p className="auth-intro">Log in to continue your journey with us.</p>
-
-        {error && <div className="alert-error">{error}</div>}
-
-        <label className="auth-field"><span>Email address</span><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></label>
-
-        <label className="auth-field"><span>Password</span><span className="password-input"><input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></span></label>
-
-        <button type="submit" className="auth-submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Log In'}
-        </button>
-
-        <p className="auth-switch muted small">
-          No account? <Link to="/register">Sign up</Link>
-        </p>
-      </form>
+      </div>
     </div>
   );
 }

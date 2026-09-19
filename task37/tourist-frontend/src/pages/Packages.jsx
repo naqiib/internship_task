@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { Clock3, Heart, MapPin } from 'lucide-react';
+import { BadgeDollarSign, CheckCircle2, Clock3, Heart, MapPin, Ticket, Users, XCircle } from 'lucide-react';
 import kalashValleyImage from '../assets/kalash-mountains.jpg';
 import northernAreasImage from '../assets/northern-areas.jpg';
 import heroImage from '../assets/hero.png';
@@ -57,16 +57,17 @@ export default function Packages() {
           <article key={pkg.id} className="package-card">
             <div className="package-image-wrap"><img src={getPackageImage(pkg, index)} alt={pkg.destination?.name || pkg.title} /><button className="package-favourite" aria-label={`Save ${pkg.title}`}><Heart size={17} /></button><span className="package-badge">Popular trip</span></div>
             <div className="package-card-body">
-              <div className="package-meta"><span><MapPin size={13} /> {pkg.destination?.name || 'Northern Pakistan'}</span><span><Clock3 size={13} /> {pkg.duration} days</span></div>
+              <div className="package-meta"><span><MapPin size={13} strokeWidth={1.75} aria-hidden="true" /> {pkg.destination?.name || 'Northern Pakistan'}</span><span><Clock3 size={13} strokeWidth={1.75} aria-hidden="true" /> {pkg.duration} days</span><span><Users size={13} strokeWidth={1.75} aria-hidden="true" /> Small group</span></div>
               <h3>{pkg.title}</h3>
               <p className="package-description">{pkg.description}</p>
-              <div className="package-card-footer"><div><span className="from-label">From</span><strong className="price">Rs. {Number(pkg.price).toLocaleString()}</strong><span className="per-person"> / person</span></div>
+              <div className="package-included-icons"><CheckCircle2 size={14} strokeWidth={1.75} aria-hidden="true" /> Included services <XCircle size={14} strokeWidth={1.75} aria-hidden="true" /> Flexible exclusions</div>
+              <div className="package-card-footer"><div><span className="from-label"><BadgeDollarSign size={13} strokeWidth={1.75} aria-hidden="true" /> From</span><strong className="price">Rs. {Number(pkg.price).toLocaleString()}</strong><span className="per-person"> / person</span></div>
             {pkg.id === hunzaPackage.id ? (
-              <Link to="/destinations" className="btn-cta small">Explore Hunza</Link>
+              <Link to="/destinations" className="btn-cta small"><Ticket size={15} strokeWidth={1.75} aria-hidden="true" /> Explore Hunza</Link>
             ) : user ? (
-              <Link to={`/book/${pkg.id}`} className="btn-cta small">Book Now</Link>
+              <Link to={`/book/${pkg.id}`} className="btn-cta small"><Ticket size={15} strokeWidth={1.75} aria-hidden="true" /> Book Now</Link>
             ) : (
-              <Link to="/login" className="btn-cta small">Login to Book</Link>
+              <Link to="/login" className="btn-cta small"><Ticket size={15} strokeWidth={1.75} aria-hidden="true" /> Login to Book</Link>
             )}
               </div>
             </div>

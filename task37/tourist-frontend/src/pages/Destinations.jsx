@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
-import { CalendarDays, MapPin, Search, ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarDays, Clock, Heart, MapPin, Search, SearchX, SlidersHorizontal, Star } from 'lucide-react';
 import { getDestinationImage } from '../utils/destinationImages';
 
 export default function Destinations() {
@@ -64,6 +64,7 @@ export default function Destinations() {
       </form>
 
       <div className="category-pills">
+        <span className="filter-section-label"><SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden="true" /> Filter</span>
         <button
           className={`pill ${selectedCat === '' ? 'active' : ''}`}
           onClick={() => setSelectedCat('')}
@@ -87,6 +88,7 @@ export default function Destinations() {
       <div className="card-grid destinations-grid">
         {!loading && destinations.length === 0 && (
           <div className="no-results-box">
+            <SearchX size={28} aria-hidden="true" />
             <p className="muted">No destinations match your search criteria.</p>
           </div>
         )}
@@ -111,9 +113,10 @@ export default function Destinations() {
                 <div className="dest-card-footer">
                   {dest.best_season && (
                     <span className="season-tag">
-                      <CalendarDays size={14} aria-hidden="true" /> {dest.best_season}
+                      <Clock size={14} strokeWidth={1.75} aria-hidden="true" /> {dest.best_season}
                     </span>
                   )}
+                  {dest.reviews_avg_rating && <span className="rating-stars"><Star size={14} strokeWidth={1.75} aria-hidden="true" /> {Number(dest.reviews_avg_rating).toFixed(1)}</span>}
                   {dest.estimated_cost && (
                     <span className="dest-price-tag">
                       Est. Rs. {Number(dest.estimated_cost).toLocaleString()}
@@ -122,7 +125,7 @@ export default function Destinations() {
                 </div>
 
                 <div className="view-details-btn">
-                  View Packages & Details <ArrowRight size={15} />
+                  <Heart size={15} strokeWidth={1.75} aria-hidden="true" /> View Packages & Details <ArrowRight size={15} aria-hidden="true" />
                 </div>
               </div>
             </Link>

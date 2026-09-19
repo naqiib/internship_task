@@ -1,4 +1,4 @@
-import { Compass, Mail, MapPin, Phone, ShieldCheck, Heart } from 'lucide-react';
+import { Camera, Compass, Heart, Mail, MapPin, Phone, Play, Share2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import northernPlaceLogo from '../assets/northern-place-logo.jpg';
 
@@ -66,6 +66,11 @@ export default function Footer() {
                 <span>24/7 Traveller Support Center</span>
               </li>
             </ul>
+            <div className="footer-social-links" aria-label="Social media links">
+              <a href="#facebook" aria-label="Facebook"><Share2 size={17} aria-hidden="true" /></a>
+              <a href="#instagram" aria-label="Instagram"><Camera size={17} aria-hidden="true" /></a>
+              <a href="#youtube" aria-label="YouTube"><Play size={17} aria-hidden="true" /></a>
+            </div>
           </div>
         </div>
 

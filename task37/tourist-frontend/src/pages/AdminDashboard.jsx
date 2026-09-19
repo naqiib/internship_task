@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   Activity,
   BarChart3,
+  Check,
   CalendarDays,
   CheckCircle2,
   Clock,
@@ -11,13 +12,16 @@ import {
   DollarSign,
   Edit,
   MapPin,
+  LayoutDashboard,
   Package,
+  Pencil,
   Plus,
   RefreshCw,
   Search,
   Settings,
   ShoppingBag,
   Trash2,
+  Ticket,
   TrendingUp,
   UserCheck,
   Users,
@@ -408,11 +412,11 @@ export default function AdminDashboard() {
           <div className="nav-section-title">WORKSPACE</div>
           <div className="nav-group">
             {[
-              ['overview', 'Overview', BarChart3],
+              ['overview', 'Overview', LayoutDashboard],
               ['destinations', 'Destinations', Compass],
               ['packages', 'Packages', Package],
               ['guides', 'Tour Guides', UserCheck],
-              ['bookings', 'Bookings', CalendarDays],
+              ['bookings', 'Bookings', Ticket],
               ['users', 'Users', Users]
             ].map(([tab, label, Icon]) => (
               <button

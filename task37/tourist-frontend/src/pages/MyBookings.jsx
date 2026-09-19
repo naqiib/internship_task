@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../api/client';
-import { CalendarDays, Map, MapPin, Users, Wallet } from 'lucide-react';
+import { Ban, CalendarDays, CheckCircle2, Clock, Map, MapPin, Ticket, Users, Wallet, XCircle } from 'lucide-react';
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -41,7 +41,7 @@ export default function MyBookings() {
 
   return (
     <div className="page">
-      <h1 className="title-with-icon"><CalendarDays size={28} aria-hidden="true" /> My Bookings</h1>
+      <h1 className="title-with-icon"><Ticket size={28} strokeWidth={1.75} aria-hidden="true" /> My Bookings</h1>
       <p className="muted">Track your upcoming tours and travel itineraries</p>
 
       {loading && <p className="muted">Loading your bookings...</p>}
@@ -72,6 +72,9 @@ export default function MyBookings() {
 
               <div className="booking-side">
                 <span className={`status-badge status-${b.status}`}>
+                  {b.status === 'pending' && <Clock size={14} aria-hidden="true" />}
+                  {b.status === 'confirmed' && <CheckCircle2 size={14} aria-hidden="true" />}
+                  {(b.status === 'cancelled' || b.status === 'rejected') && <XCircle size={14} aria-hidden="true" />}
                   {b.status.toUpperCase()}
                 </span>
 
@@ -81,7 +84,7 @@ export default function MyBookings() {
                   </button>
                   {b.status === 'pending' && (
                     <button className="btn-danger small" onClick={() => handleCancel(b.id)}>
-                      Cancel Booking
+                      <Ban size={15} aria-hidden="true" /> Cancel Booking
                     </button>
                   )}
                 </div>

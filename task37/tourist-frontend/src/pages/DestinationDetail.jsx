@@ -9,9 +9,13 @@ import {
   Clock3,
   Heart,
   MapPin,
+  MessageSquare,
+  Mountain,
+  Image as ImageIcon,
   ShieldCheck,
   Star,
   Sun,
+  Thermometer,
   Wallet,
   ArrowRight
 } from 'lucide-react';
@@ -105,7 +109,7 @@ export default function DestinationDetail() {
             <span className="location-pill"><MapPin size={14} /> {destination.location}</span>
           </div>
 
-          <h1>{destination.name}</h1>
+          <h1><Mountain size={28} strokeWidth={1.75} aria-hidden="true" /> {destination.name}</h1>
 
           <div className="detail-quick-meta">
             {destination.estimated_cost && (
@@ -157,7 +161,7 @@ export default function DestinationDetail() {
               </div>
 
               <div className="highlight-box">
-                <Sun size={20} className="icon-gold" />
+                <Thermometer size={20} strokeWidth={1.75} className="icon-gold" aria-hidden="true" />
                 <div>
                   <strong>Best Time to Visit</strong>
                   <span>{destination.best_season || 'May through October'}</span>
@@ -168,7 +172,7 @@ export default function DestinationDetail() {
 
           {/* REVIEWS SECTION */}
           <div className="detail-section-card">
-            <h2>Traveler Reviews ({destination.reviews?.length || 0})</h2>
+            <h2><MessageSquare size={20} strokeWidth={1.75} aria-hidden="true" /> Traveler Reviews ({destination.reviews?.length || 0})</h2>
 
             {destination.reviews?.length ? (
               <div className="reviews-list">
@@ -227,7 +231,7 @@ export default function DestinationDetail() {
         {/* RIGHT COLUMN: TOUR PACKAGES & BOOKING CARDS */}
         <div className="detail-side-col">
           <div className="detail-section-card packages-panel">
-            <h2>Available Tour Packages</h2>
+            <h2><ImageIcon size={20} strokeWidth={1.75} aria-hidden="true" /> Available Tour Packages</h2>
             <p className="muted">Choose a package to book your trip to {destination.name}:</p>
 
             {destination.packages?.length ? (

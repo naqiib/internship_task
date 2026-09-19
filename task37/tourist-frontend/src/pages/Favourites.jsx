@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import client from '../api/client';
-import { Heart, Trash2 } from 'lucide-react';
+import { Heart, HeartOff, MapPin, Trash2 } from 'lucide-react';
 
 export default function Favourites() {
   const [favourites, setFavourites] = useState([]);
@@ -39,6 +39,7 @@ export default function Favourites() {
 
       {!loading && !error && favourites.length === 0 && (
         <div className="empty-state">
+          <HeartOff size={30} aria-hidden="true" />
           <p className="muted">You haven't saved any destinations yet.</p>
           <Link to="/destinations" className="btn-cta small">Browse Destinations</Link>
         </div>
@@ -60,7 +61,7 @@ export default function Favourites() {
                   <Trash2 size={17} aria-hidden="true" />
                 </button>
               </div>
-              <p className="muted">{dest.location}</p>
+              <p className="muted inline-icon"><MapPin size={15} aria-hidden="true" /> {dest.location}</p>
               {dest.estimated_cost && (
                 <p className="price">Est. Rs. {Number(dest.estimated_cost).toLocaleString()}</p>
               )}

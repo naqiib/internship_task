@@ -11,6 +11,8 @@ import {
   Search,
   Send,
   ShieldCheck,
+  Sun,
+  Tent,
   Users,
   X
 } from 'lucide-react';
@@ -26,9 +28,9 @@ const localDestinations = [
 ];
 
 const services = [
-  { icon: Compass, title: 'Certified Local Guides', text: 'Meet trusted mountain guides who know every trail, viewpoint, and hidden valley.' },
-  { icon: Car, title: 'Comfortable Transport', text: 'Reliable 4x4 car services for smooth transfers across mountain passes and valleys.' },
-  { icon: ShieldCheck, title: '24/7 Trip Support', text: 'From itinerary planning to your safe return, our travel experts have your back.' },
+  { icon: Mountain, title: 'Certified Local Guides', text: 'Meet trusted mountain guides who know every trail, viewpoint, and hidden valley.' },
+  { icon: Tent, title: 'Comfortable Camping', text: 'Reliable stays and camp services for smooth nights across mountain passes and valleys.' },
+  { icon: Sun, title: '24/7 Trip Support', text: 'From itinerary planning to your safe return, our travel experts have your back.' },
 ];
 
 export default function Home() {
@@ -68,7 +70,7 @@ export default function Home() {
           <div className="vitour-hero-container">
             <div className="vitour-hero-content">
               {/* CURSIVE GREEN SUB-HEADING */}
-              <span className="cursive-eyebrow">Explore the world</span>
+              <span className="cursive-eyebrow"><Mountain size={20} strokeWidth={1.75} aria-hidden="true" /> Explore the world</span>
 
               {/* MAIN BOLD DISPLAY TITLE */}
               <h1 className="hero-main-heading">

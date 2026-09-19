@@ -64,12 +64,12 @@ export default function Navbar() {
           <Link to="/destinations" onClick={() => setMenuOpen(false)}>Destination</Link>
           <Link to="/packages" onClick={() => setMenuOpen(false)}>Packages</Link>
           <Link to="/#about" onClick={() => setMenuOpen(false)}>About</Link>
-          <Link to="/#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
+          <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
 
           {user && (
             <>
               <Link to="/favourites" onClick={() => setMenuOpen(false)}><Heart size={15} aria-hidden="true" /> Saved</Link>
-              <Link to="/bookings" onClick={() => setMenuOpen(false)}>My Bookings</Link>
+              <Link to="/bookings" onClick={() => setMenuOpen(false)}>Bookings</Link>
             </>
           )}
 
@@ -116,7 +116,6 @@ export default function Navbar() {
           ) : (
             <div className="nav-auth-btns">
               <Link to="/login" className="login-link">Login</Link>
-              <Link to="/register" className="btn-cta green-cta">Sign Up</Link>
             </div>
           )}
         </div>

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FloatingNav from './components/FloatingNav';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Home from './pages/Home';
@@ -10,6 +11,7 @@ import Register from './pages/Register';
 import Destinations from './pages/Destinations';
 import DestinationDetail from './pages/DestinationDetail';
 import Packages from './pages/Packages';
+import Contact from './pages/Contact';
 import BookingForm from './pages/BookingForm';
 import MyBookings from './pages/MyBookings';
 import Favourites from './pages/Favourites';
@@ -33,6 +35,7 @@ function AppLayout() {
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/destinations/:id" element={<DestinationDetail />} />
           <Route path="/packages" element={<Packages />} />
+          <Route path="/contact" element={<Contact />} />
           <Route
             path="/book/:packageId"
             element={
@@ -77,6 +80,7 @@ function AppLayout() {
         </Routes>
       </main>
       {!hideGlobalChrome && <Footer />}
+      {!hideGlobalChrome && <FloatingNav />}
     </>
   );
 }
