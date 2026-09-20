@@ -909,6 +909,33 @@ a:hover { text-decoration: underline; }
 .icon-button { justify-content: center; }
 .btn-icon { display: inline-flex; align-items: center; justify-content: center; }
 
+.booking-page { max-width: 1100px; margin: 0 auto; }
+.booking-page-header { margin-bottom: 1.5rem; }
+.booking-page-header h1 { margin-bottom: 0.25rem; }
+.booking-list { display: grid; gap: 1rem; }
+.booking-card { display: flex; flex-direction: column; gap: 1rem; background: linear-gradient(180deg, #fff 0%, #fdfbf8 100%); border: 1px solid rgba(18, 46, 34, 0.08); box-shadow: 0 10px 26px rgba(15, 39, 29, 0.06); }
+.booking-card:hover { box-shadow: 0 14px 30px rgba(15, 39, 29, 0.08); }
+.booking-main { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.25rem; }
+.booking-card-body { flex: 1; }
+.booking-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; }
+.booking-label { display: inline-flex; margin-bottom: .45rem; font-size: 0.68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--rust); }
+.booking-card h3 { margin: 0; font-size: clamp(1.25rem, 2vw, 1.55rem); }
+.booking-side { display: flex; flex-direction: column; align-items: flex-end; gap: .85rem; min-width: 180px; }
+.booking-pricing { display: flex; flex-direction: column; align-items: flex-end; gap: .15rem; padding: .8rem .9rem; background: #f4efe7; border: 1px solid rgba(161, 117, 52, 0.18); border-radius: 10px; }
+.booking-pricing span { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: .08em; }
+.booking-pricing strong { font-size: 1.15rem; color: var(--pine-dark); }
+.booking-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+.guide-info { margin-top: 0.7rem; color: var(--muted); }
+.empty-state { background: #f8f7f3; border: 1px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; }
+
+@media (max-width: 768px) {
+  .booking-main { flex-direction: column; align-items: stretch; }
+  .booking-header-row { flex-direction: column; }
+  .booking-side { align-items: stretch; min-width: 0; }
+  .booking-pricing { align-items: flex-start; }
+  .meta-row { flex-direction: column; align-items: flex-start; gap: 0.55rem; }
+}
+
 /* Homepage */
 .home-page { width: 100%; max-width: 100%; overflow: hidden; background: #f7f3ea; }
 .brand-logo { width: 32px; height: 32px; object-fit: cover; border: 1px solid var(--sand); border-radius: 50%; background: white; }

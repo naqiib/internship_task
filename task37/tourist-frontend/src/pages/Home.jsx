@@ -30,7 +30,7 @@ const localDestinations = [
 const services = [
   { icon: Mountain, title: 'Certified Local Guides', text: 'Meet trusted mountain guides who know every trail, viewpoint, and hidden valley.' },
   { icon: Tent, title: 'Comfortable Camping', text: 'Reliable stays and camp services for smooth nights across mountain passes and valleys.' },
-  { icon: Sun, title: '24/7 Trip Support', text: 'From itinerary planning to your safe return, our travel experts have your back.' },
+  { icon: Sun, title: '24/7 Trip Support', text: 'From trip planning to your safe return, our travel experts have your back.' },
 ];
 
 export default function Home() {
@@ -240,7 +240,7 @@ export default function Home() {
           <h2>Tell us where<br />you want to go.</h2>
         </div>
         <div className="contact-copy">
-          <p>Have a question or a custom itinerary? Our team is available to help.</p>
+          <p>Have a question or a custom tour plan? Our team is available to help.</p>
           <button className="btn-cta vitour-green-btn" type="button" onClick={() => { setContactOpen(true); setContactSent(false); }}>
             <Send size={16} /> Contact us
           </button>
@@ -265,7 +265,7 @@ export default function Home() {
               <>
                 <span className="section-kicker">Vitour Team</span>
                 <h2 id="contact-title">Let&apos;s plan your trip.</h2>
-                <p className="muted">Share a few details and we&apos;ll help you find the right itinerary.</p>
+                <p className="muted">Share a few details and we&apos;ll help you find the right tour plan.</p>
                 <form onSubmit={(event) => { event.preventDefault(); setContactSent(true); }}>
                   <label>Name<input required type="text" placeholder="Your name" /></label>
                   <label>Email<input required type="email" placeholder="you@example.com" /></label>
