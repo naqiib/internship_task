@@ -1,0 +1,103 @@
+# Save this in your repo as:  .github/workflows/deploy-tourism.yml
+# (the .github folder must be at the ROOT of the git repository)
+#
+# Needs 3 GitHub secrets (Settings > Secrets and variables > Actions):
+#   FTP_SERVER    e.g. ftpupload.net
+#   FTP_USERNAME  e.g. if0_42963820
+#   FTP_PASSWORD  your InfinityFree FTP password
+
+name: Deploy tourism site to InfinityFree
+
+on:
+  push:
+    branches: [main]            # change if your branch has another name
+    paths:
+      - 'task37/**'             # only run when the tourism project changes
+      - '.github/workflows/deploy-tourism.yml'
+  workflow_dispatch:            # adds a "Run workflow" button in the Actions tab
+
+# Never run two deployments at the same time (FTP connections are limited)
+concurrency:
+  group: infinityfree-deploy
+  cancel-in-progress: false
+
+jobs:
+  frontend:
+    name: Frontend - check, build, upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: task37/tourist-frontend
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: task37/tourist-frontend/package-lock.json
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (API is on the same site, under /api)
+        run: npm run build
+        env:
+          VITE_API_URL: /api
+
+      - name: Upload build to htdocs
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: task37/tourist-frontend/dist/
+          server-dir: /htdocs/
+          state-name: .ftp-frontend-state.json
+          # dry-run: true      # uncomment for a first test run that uploads nothing
+
+  backend:
+    name: Backend - check, upload
+    needs: frontend             # only runs if the frontend job succeeded
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: PHP syntax check
+        run: find task37/tourist-backend -name '*.php' -not -path '*/vendor/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Upload Laravel code to htdocs/laravel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: task37/tourist-backend/
+          server-dir: /htdocs/laravel/
+          state-name: .ftp-backend-state.json
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            vendor/**
+            tests/**
+            public/**
+            storage/**
+            bootstrap/cache/*.php
+            database/database.sqlite
+            .env
+            .env.*
+          # dry-run: true      # uncomment for a first test run that uploads nothing
