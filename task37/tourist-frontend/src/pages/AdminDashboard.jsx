@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -26,7 +26,9 @@ import {
   UserCheck,
   Users,
   X,
-  LogOut
+  LogOut,
+  UserCog,
+  ChevronDown
 } from 'lucide-react';
 
 const formatTravelDate = (value) => {
@@ -42,8 +44,10 @@ const formatTravelDate = (value) => {
 };
 
 export default function AdminDashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
 
   // Core Data Collections
   const [stats, setStats] = useState(null);
@@ -59,10 +63,54 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [profileForm, setProfileForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    current_password: ''
+  });
 
   const handleAdminLogout = async () => {
+    setProfileMenuOpen(false);
     await logout();
     window.location.href = '/login';
+  };
+
+  const openProfileModal = () => {
+    setProfileMenuOpen(false);
+    setProfileForm({
+      name: user?.name || '',
+      email: user?.email || '',
+      password: '',
+      password_confirmation: '',
+      current_password: ''
+    });
+    setError('');
+    setModalType('profile');
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const payload = {
+        name: profileForm.name,
+        email: profileForm.email
+      };
+      if (profileForm.password) {
+        payload.password = profileForm.password;
+        payload.password_confirmation = profileForm.password_confirmation;
+        payload.current_password = profileForm.current_password;
+      }
+      const { data } = await client.put('/profile', payload);
+      updateUser(data.user);
+      setModalType(null);
+      showToast('Profile updated successfully!');
+    } catch (err) {
+      const validationErrors = err.response?.data?.errors;
+      setError(validationErrors ? Object.values(validationErrors).flat().join(' ') : 'Could not update profile.');
+    }
   };
 
   // Modals
@@ -182,6 +230,23 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadAll();
+  }, []);
+
+  useEffect(() => {
+    const handleProfileMenuInteraction = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+      if (event.key === 'Escape') {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handleProfileMenuInteraction);
+    document.addEventListener('keydown', handleProfileMenuInteraction);
+    return () => {
+      document.removeEventListener('pointerdown', handleProfileMenuInteraction);
+      document.removeEventListener('keydown', handleProfileMenuInteraction);
+    };
   }, []);
 
   // CRUD Handlers
@@ -398,13 +463,40 @@ export default function AdminDashboard() {
   return (
     <div className="admin-app-layout">
       <aside className="admin-sidebar">
-        <div className="sidebar-header">
-          <div className="user-profile-badge">
-            <div className="avatar-icon"><Settings size={19} /><span className="online-dot" /></div>
-            <div className="profile-details">
-              <span className="user-name">{user?.name || 'Administrator'}</span>
-              <span className="user-role-tag">Admin control</span>
-            </div>
+        <div className="sidebar-header" ref={profileMenuRef}>
+          <div className="profile-menu-container">
+            <button
+              type="button"
+              className="profile-menu-trigger"
+              aria-haspopup="menu"
+              aria-expanded={profileMenuOpen}
+              onClick={() => setProfileMenuOpen((open) => !open)}
+            >
+              <span className="user-profile-badge">
+                <span className="avatar-icon"><Settings size={19} /><span className="online-dot" /></span>
+                <span className="profile-details">
+                  <span className="user-name">{user?.name || 'Administrator'}</span>
+                  <span className="user-role-tag">Admin control</span>
+                </span>
+              </span>
+              <ChevronDown className={`profile-menu-chevron ${profileMenuOpen ? 'is-open' : ''}`} size={17} />
+            </button>
+            {profileMenuOpen && (
+              <div className="profile-menu-dropdown" role="menu">
+                <div className="profile-menu-identity">
+                  <strong>{user?.name || 'Administrator'}</strong>
+                  <span>{user?.email || ''}</span>
+                </div>
+                <button type="button" role="menuitem" className="profile-menu-item" onClick={openProfileModal}>
+                  <UserCog size={17} />
+                  <span>Edit profile</span>
+                </button>
+                <button type="button" role="menuitem" className="profile-menu-item profile-menu-logout" onClick={handleAdminLogout}>
+                  <LogOut size={17} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -974,6 +1066,65 @@ export default function AdminDashboard() {
         <div className="modal-backdrop" onClick={() => setModalType(null)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             
+            {/* DESTINATION MODAL */}
+            {modalType === 'profile' && (
+              <form onSubmit={handleSaveProfile}>
+                <h3>Edit profile</h3>
+                <label htmlFor="profile-name">Full name</label>
+                <input
+                  id="profile-name"
+                  type="text"
+                  required
+                  value={profileForm.name}
+                  onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                />
+
+                <label htmlFor="profile-email">Email</label>
+                <input
+                  id="profile-email"
+                  type="email"
+                  required
+                  value={profileForm.email}
+                  onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                />
+
+                <label htmlFor="profile-password">New password <span className="muted">(optional)</span></label>
+                <input
+                  id="profile-password"
+                  type="password"
+                  minLength="8"
+                  value={profileForm.password}
+                  onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
+                />
+
+                {profileForm.password && (
+                  <>
+                    <label htmlFor="profile-password-confirmation">Confirm new password</label>
+                    <input
+                      id="profile-password-confirmation"
+                      type="password"
+                      required
+                      value={profileForm.password_confirmation}
+                      onChange={(e) => setProfileForm({ ...profileForm, password_confirmation: e.target.value })}
+                    />
+                    <label htmlFor="profile-current-password">Current password</label>
+                    <input
+                      id="profile-current-password"
+                      type="password"
+                      required
+                      value={profileForm.current_password}
+                      onChange={(e) => setProfileForm({ ...profileForm, current_password: e.target.value })}
+                    />
+                  </>
+                )}
+
+                <div className="modal-actions">
+                  <button type="button" className="btn-secondary" onClick={() => setModalType(null)}>Cancel</button>
+                  <button type="submit" className="btn-cta">Save changes</button>
+                </div>
+              </form>
+            )}
+
             {/* DESTINATION MODAL */}
             {modalType === 'destination' && (
               <form onSubmit={handleSaveDestination}>

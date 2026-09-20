@@ -3915,6 +3915,94 @@ a:hover { text-decoration: underline; }
 }
 .auth-pill-submit:hover { filter: brightness(1.08); }
 .auth-pill-submit:disabled { opacity: .7; cursor: default; }
+
+/* Admin profile menu */
+.profile-menu-container {
+  position: relative;
+  width: 100%;
+}
+
+.profile-menu-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-menu-trigger:hover .user-name {
+  color: var(--primary-green);
+}
+
+.profile-menu-chevron {
+  flex: 0 0 auto;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.profile-menu-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.profile-menu-dropdown {
+  position: absolute;
+  top: calc(100% - 0.35rem);
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 700;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dfeae1;
+  border-radius: 10px;
+  box-shadow: 0 14px 30px rgba(18, 43, 28, 0.18);
+}
+
+.profile-menu-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 0.9rem;
+  border-bottom: 1px solid #edf2ee;
+}
+
+.profile-menu-identity strong {
+  color: var(--pine-dark);
+  font-size: 0.88rem;
+}
+
+.profile-menu-identity span {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.profile-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border: 0;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 0.86rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-menu-item:hover {
+  background: #f1f8ef;
+}
+
+.profile-menu-logout {
+  color: #b42318;
+}
 .auth-switch-dark { margin-top: 1.4rem; color: rgba(255,255,255,.55); font-size: .84rem; }
 .auth-switch-dark a { color: var(--primary-green); font-weight: 700; }
 .auth-consent-dark { display: flex; align-items: flex-start; gap: .5rem; margin-top: 1.4rem; color: rgba(255,255,255,.55); font-size: .78rem; line-height: 1.4; }

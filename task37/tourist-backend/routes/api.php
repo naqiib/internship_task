@@ -31,6 +31,7 @@ Route::get('/guides', [GuideController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
 
     // Admin-protected writes are checked inside each controller (role stored on the user).
     Route::post('/destinations', [DestinationController::class, 'store']);
